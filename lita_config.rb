@@ -1,33 +1,37 @@
 Lita.configure do |config|
-  # The name your robot will use.
-  config.robot.name = "Lita"
+  # When possible, everything is an environment variable.
+  # This makes it a bit easier to distribute but makes it a bit harder to deploy.
+  # You can replace any of these variables with your settings WITHOUT having to 
+  # set env vars. See the Lita docs for more info on how to do this.
 
-  # The locale code for the language to use.
-  # config.robot.locale = :en
-
-  # The severity of messages to log. Options are:
-  # :debug, :info, :warn, :error, :fatal
-  # Messages at the selected level and above will be logged.
+  # Lita Settings
+  config.robot.name = ENV["LITA_ROBOT_NAME"]
+  config.robot.adapter = :irc
+  config.robot.locale = :en
   config.robot.log_level = :info
+  config.redis[:url] = ENV["REDISTOGO_URL"]
+  config.http.port = ENV["PORT"]
 
-  # An array of user IDs that are considered administrators. These users
-  # the ability to add and remove other users from authorization groups.
-  # What is considered a user ID will change depending on which adapter you use.
-  # config.robot.admins = ["1", "2"]
+  #IRC Settings
+  config.adapters.irc.server = ENV["LITA_IRC_SERVER"]
+  config.adapters.irc.channels = ENV["LITA_IRC_CHANNELS"]
+  config.adapters.irc.user = ENV["LITA_IRC_USER"]
+  config.adapters.irc.realname = ENV["LITA_IRC_REALNAME"]
+  config.adapters.irc.password = ENV["LITA_IRC_PASSWORD"]
+  config.adapters.irc.cinch = lambda do |cinch_config|
+    cinch_config.max_reconnect_delay = 123
+  end
 
-  # The adapter you want to connect with. Make sure you've added the
-  # appropriate gem to the Gemfile.
-  config.robot.adapter = :shell
+  # GitHub Settings
+  config.handlers.github_commits.repos = { ENV["LITA_GITHUB_REPOSITORIES"] }
 
-  ## Example: Set options for the chosen adapter.
-  # config.adapter.username = "myname"
-  # config.adapter.password = "secret"
+  # Nagios Settings
+  config.handlers.nagios.default_room = ENV["LITA_NAGIOS_ROOM"]
+  config.handlers.nagios.cgi = ENV["LITA_NAGIOS_CGI"]
+  config.handlers.nagios.user = ENV["LITA_NAGIOS_USER"]
+  config.handlers.nagios.pass = ENV["LITA_NAGIOS_PASSWORD"]
+  config.handlers.nagios.version = 3
+  config.handlers.nagios.time_format = "iso8601"
+  config.handlers.nagios.verify_ssl = false
 
-  ## Example: Set options for the Redis connection.
-  # config.redis.host = "127.0.0.1"
-  # config.redis.port = 1234
-
-  ## Example: Set configuration for any loaded handlers. See the handler's
-  ## documentation for options.
-  # config.handlers.some_handler.some_config_key = "value"
 end
