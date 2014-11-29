@@ -23,7 +23,11 @@ Lita.configure do |config|
   end
 
   # GitHub Settings
-  config.handlers.github_commits.repos = { ENV["LITA_GITHUB_REPOSITORIES"] }
+  config.handlers.github_commits.repos = {
+    "afolson/afolson.github.com" => ENV["LITA_GITHUB_SWIFTIRC_DEVCHANNEL"],
+    "swiftirc/wiki" => [ ENV["LITA_GITHUB_SWIFTIRC_DEVCHANNEL"], ENV["LITA_GITHUB_SWIFTIRC_WIKIDEVCHANNEL"] ],
+    "incredibl/incredibot" => ENV["LITA_GITHUB_INCREDIBL_ADMINCHANNEL"]
+  }
 
   # Nagios Settings
   config.handlers.nagios.default_room = ENV["LITA_NAGIOS_ROOM"]
